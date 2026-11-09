@@ -1,0 +1,47 @@
+---
+import { site } from '../../data/site';
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+// Group days that share the same open/close times into one OpeningHoursSpecification.
+const groups = new Map<string, { opens: string; closes: string; days: string[] }>();
+for (const h of site.hours) {
+  const key = `${h.open}-${h.close}`;
+  if (!groups.has(key)) groups.set(key, { opens: h.open, closes: h.close, days: [] });
+  groups.get(key)!.days.push(`https://schema.org/${DAY_NAMES[h.day]}`);
+}
+
+const data: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'ButcherShop',
+  name: site.name,
+  url: site.url,
+  telephone: site.phone,
+  servesCuisine: ['Steak', 'Sausage', 'Charcuterie'],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.city,
+    addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
+    addressCountry: site.address.country,
+  },
+  openingHoursSpecification: [...groups.values()].map((g) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: g.days,
+    opens: g.opens,
+    closes: g.closes,
+  })),
+  hasMenu: new URL('/menu', site.url).toString(),
+  sameAs: [site.instagram, site.yelp],
+};
+
+if (site.rating.count != null) {
+  data.aggregateRating = {
+    '@type': 'AggregateRating',
+    ratingValue: site.rating.value,
+    reviewCount: site.rating.count,
+  };
+}
+---
+<script type="application/ld+json" set:html={JSON.stringify(data)} />

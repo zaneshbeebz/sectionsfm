@@ -1,0 +1,47 @@
+---
+// Shows a real image when `src` is given, otherwise a striped placeholder labelled with what photo belongs there.
+interface Props {
+  alt: string;
+  src?: string;
+  ratio?: string; // CSS aspect-ratio, e.g. "4 / 5"
+  tone?: 'dark' | 'light';
+  label?: string; // shown on the placeholder only
+  class?: string;
+  eager?: boolean;
+}
+const { alt, src, ratio = '1 / 1', tone = 'dark', label, class: cls, eager = false } = Astro.props;
+---
+{src ? (
+  <img
+    src={src}
+    alt={alt}
+    class:list={['slot', cls]}
+    style={`aspect-ratio:${ratio}`}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+) : (
+  <div class:list={['slot', 'ph', `ph-${tone}`, cls]} style={`aspect-ratio:${ratio}`} role="img" aria-label={alt}>
+    {label && import.meta.env.DEV && <span class="ph-label">{label}</span>}
+    <slot />
+  </div>
+)}
+
+<style>
+  .slot { width: 100%; border-radius: var(--radius); object-fit: cover; }
+  .ph { position: relative; overflow: hidden; }
+  .ph-dark {
+    background-color: #2a2521;
+    background-image: repeating-linear-gradient(135deg, rgb(239 232 220 / .05) 0 2px, transparent 2px 14px);
+  }
+  .ph-light {
+    background-color: var(--paper-2);
+    background-image: repeating-linear-gradient(135deg, rgb(22 20 18 / .06) 0 2px, transparent 2px 14px);
+  }
+  .ph-label {
+    position: absolute; top: 14px; left: 14px;
+    font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em;
+  }
+  .ph-dark .ph-label { color: var(--muted-on-dark); }
+  .ph-light .ph-label { color: var(--muted-on-paper); }
+</style>

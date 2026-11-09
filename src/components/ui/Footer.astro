@@ -1,0 +1,46 @@
+---
+import { site, nav } from '../../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container grid">
+    <div>
+      <p class="name">{site.shortName}</p>
+      <p>{site.address.street}<br />{site.address.city}, {site.address.region} {site.address.postalCode}</p>
+      <p><a class="tel" href={site.phoneHref}>{site.phone}</a></p>
+    </div>
+    <div>
+      <p class="label">Hours</p>
+      {site.hoursSummary.map((h) => <p class="tight">{h}</p>)}
+    </div>
+    <nav aria-label="Footer">
+      <p class="label">Explore</p>
+      <ul>
+        {nav.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+    <div>
+      <p class="label">Follow</p>
+      <ul>
+        <li><a href={site.instagram}>Instagram</a></li>
+        <li><a href={site.yelp}>Yelp</a></li>
+        <li><a href={site.orderUrl}>Order online</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container legal">© {year} {site.name} · Costa Mesa, California</div>
+</footer>
+
+<style>
+  .footer { background: var(--ink-3); color: var(--muted-on-dark); font-size: 15px; padding-top: 56px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; }
+  .name { font-family: var(--font-display); font-weight: 900; font-size: 32px; text-transform: uppercase; color: var(--paper); margin: 0 0 12px; line-height: 1; }
+  .label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; margin: 0 0 12px; color: var(--paper); }
+  p { margin: 0 0 12px; }
+  .tight { margin: 0 0 4px; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li a, .tel { display: inline-flex; align-items: center; min-height: 44px; }
+  a { text-decoration: none; }
+  a:hover { color: var(--paper); text-decoration: underline; }
+  .legal { border-top: 1px solid var(--line-dark); margin-top: 40px; padding-block: 24px; font-size: 13px; }
+</style>

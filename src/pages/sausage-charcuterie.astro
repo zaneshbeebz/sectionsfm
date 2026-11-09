@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import CategoryHero from '../components/category/CategoryHero.astro';
+import VisitCta from '../components/category/VisitCta.astro';
+import { site } from '../data/site';
+import { formatPrice, type Menu } from '../data/types';
+import menuJson from '../content/menu.json';
+
+const menu = menuJson as Menu;
+const charcuterie = menu.categories.flatMap((c) => c.items).find((i) => i.name === 'Charcuterie');
+const house = menu.categories
+  .find((c) => c.id === 'sandwiches')!
+  .items.filter((i) => i.description?.includes('House') && i.price > 0);
+---
+<BaseLayout
+  title="House-Made Sausage & Charcuterie | Sections Fine Meats"
+  description="Sausage and charcuterie made in house from trimmings at Sections Fine Meats in Costa Mesa, plus smoked brisket, pastrami, prime rib and bacon."
+  path="/sausage-charcuterie"
+>
+  <CategoryHero
+    eyebrow="Made in house"
+    title="House-made sausage & charcuterie"
+    lede="Nothing is wasted at the counter. The trimmings from our cuts become sausage, grind and cured meats."
+    photoAlt="House-made sausages and charcuterie at Sections Fine Meats"
+    photoLabel="Photo: sausage and charcuterie board"
+  >
+    <Button href={site.phoneHref} size="lg">Call ahead</Button>
+    <Button href={site.mapsUrl} variant="outline" size="lg">Get directions</Button>
+  </CategoryHero>
+  <!-- CONFIRM: swap in real photos. Also confirm current sausage flavors/varieties to list; none are in the menu data. -->
+
+  <section class="section on-paper" aria-labelledby="waste">
+    <div class="container">
+      <h2 class="display display-l" id="waste">Nothing wasted</h2>
+      <ol class="steps">
+        <li><span class="mono n">01</span><h3 class="display display-s">Trim</h3><p>Cutting steaks and roasts to order leaves good meat behind.</p></li>
+        <li><span class="mono n">02</span><h3 class="display display-s">Grind &amp; sausage</h3><p>That trim is ground and made into sausage in house.</p></li>
+        <li><span class="mono n">03</span><h3 class="display display-s">Charcuterie</h3><p>Cured and smoked meats round out the case and fill the sandwiches.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="board">
+    <div class="container two">
+      <div>
+        <h2 class="display display-l" id="board">The charcuterie board</h2>
+        {charcuterie && <p class="price mono">{formatPrice(charcuterie.price)}</p>}
+      </div>
+      <div class="prose">
+        <p>Our Charcuterie board is on the kitchen menu. Order it for pickup, or ask at the counter about what is in the case.</p>
+        <!-- CONFIRM: what comes on the board (meats, cheeses, accompaniments) and serving size. -->
+        <div class="actions">
+          <Button href={site.orderUrl}>Order for pickup</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-paper" aria-labelledby="smoked">
+    <div class="container">
+      <h2 class="display display-l" id="smoked">Smoked &amp; cured, in the sandwiches</h2>
+      <p class="lede intro">Brisket, pastrami, prime rib and bacon are made in house and used in these sandwiches.</p>
+      <ul class="list">
+        {house.map((i) => (
+          <li>
+            <div class="line"><span class="name">{i.name}</span><span class="leader" aria-hidden="true"></span><span class="mono">{formatPrice(i.price)}</span></div>
+            <p>{i.description}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="link"><a href="/menu#sandwiches">See all sandwiches →</a></p>
+    </div>
+  </section>
+
+  <VisitCta title="Stop by the counter" body="Ask what sausage and cured meats are in the case today, or call ahead." />
+
+  <section class="section more" aria-label="Keep browsing">
+    <div class="container links">
+      <a href="/dry-aged-steak-costa-mesa">Dry-aged steak in Costa Mesa →</a>
+      <a href="/menu">See the full menu →</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .steps { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 28px; }
+  .steps li { border-top: 3px solid var(--ink); padding-top: 16px; }
+  .steps p { margin: 10px 0 0; color: var(--soft-on-paper); }
+  .n { font-size: 13px; color: var(--muted-on-paper); display: block; margin-bottom: 8px; }
+  @media (min-width: 768px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 40px; } }
+  .two { display: grid; gap: 28px; }
+  @media (min-width: 900px) { .two { grid-template-columns: 1fr 1.2fr; gap: 64px; align-items: start; } }
+  .price { margin: 16px 0 0; font-size: 28px; color: var(--paper); }
+  .prose { display: flex; flex-direction: column; gap: 20px; max-width: 38rem; font-size: 18px; color: var(--soft-on-dark); }
+  .prose p { margin: 0; }
+  .intro { margin-top: 16px; }
+  .list { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 8px 48px; }
+  @media (min-width: 768px) { .list { grid-template-columns: 1fr 1fr; } }
+  .list li { padding-block: 10px; }
+  .line { display: flex; align-items: baseline; gap: 8px; }
+  .name { font-weight: 600; font-size: 17px; }
+  .leader { flex: 1; min-width: 24px; border-bottom: 2px dotted var(--muted-on-paper); transform: translateY(-4px); }
+  .list p { margin: 4px 0 0; font-size: 15px; color: var(--soft-on-paper); }
+  .link { margin: 24px 0 0; }
+  .link a { font-weight: 600; text-underline-offset: 4px; display: inline-block; padding-block: 10px; }
+  .more { padding-block: 40px; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px 32px; }
+  .links a { font-weight: 600; font-size: 17px; padding-block: 10px; text-underline-offset: 4px; }
+</style>

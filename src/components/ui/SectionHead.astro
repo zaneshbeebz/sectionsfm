@@ -1,0 +1,26 @@
+---
+// Eyebrow + display heading, with an optional link on the right. Used at the top of most sections.
+interface Props {
+  eyebrow?: string;
+  title: string;
+  size?: 'l' | 'm';
+  linkHref?: string;
+  linkLabel?: string;
+  as?: 'h1' | 'h2';
+  id?: string;
+}
+const { eyebrow, title, size = 'm', linkHref, linkLabel, as: Tag = 'h2', id } = Astro.props;
+---
+<div class="head">
+  <div class="stack">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <Tag class={`display display-${size}`} id={id}>{title}</Tag>
+  </div>
+  {linkHref && <a class="more" href={linkHref}>{linkLabel} →</a>}
+</div>
+
+<style>
+  .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 40px; }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .more { font-weight: 600; font-size: 16px; text-underline-offset: 4px; padding-block: 10px; }
+</style>

@@ -1,0 +1,26 @@
+---
+import { site } from '../../data/site';
+---
+<nav class="bar" aria-label="Quick actions">
+  <a href={site.phoneHref}>Call</a>
+  <a href={site.mapsUrl}>Directions</a>
+  <a href={site.orderUrl} class="order">Order</a>
+</nav>
+
+<style>
+  .bar { display: none; }
+  @media (max-width: 767px) {
+    .bar {
+      position: fixed; inset: auto 0 0 0; z-index: 60;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: var(--ink-3); border-top: 1px solid var(--line-dark);
+    }
+    .bar a {
+      min-height: 48px; display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--line-dark); border-radius: var(--radius);
+      font-weight: 600; font-size: 15px; text-decoration: none;
+    }
+    .bar .order { background: var(--accent); border-color: var(--accent); color: var(--white); }
+  }
+</style>

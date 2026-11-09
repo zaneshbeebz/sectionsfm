@@ -1,0 +1,97 @@
+---
+import { site, nav } from '../../data/site';
+import Button from './Button.astro';
+
+interface Props { path: string }
+const { path } = Astro.props;
+const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
+---
+<div class="strip">
+  <div class="container strip-inner">
+    <span data-hours-today>{site.hoursSummary.join(' · ')}</span>
+    <span class="strip-addr">{site.address.street.split(',')[0]}, {site.address.city}</span>
+    <a href={site.phoneHref}>{site.phone}</a>
+  </div>
+</div>
+
+<header class="header">
+  <nav class="container nav" aria-label="Main">
+    <a href="/" class="brand" aria-label={`${site.name}, home`}>
+      <span class="brand-name">{site.shortName}</span>
+      <span class="brand-sub">Fine Meats · Costa Mesa</span>
+    </a>
+
+    <ul class="links">
+      {nav.map((l) => (
+        <li><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
+      ))}
+    </ul>
+
+    <div class="cta"><Button href={site.orderUrl} variant="light">Order for pickup</Button></div>
+
+    <details class="mobile">
+      <summary aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" /></svg>
+      </summary>
+      <ul class="mobile-links">
+        {nav.map((l) => (
+          <li><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
+        ))}
+        <li><a href={site.orderUrl}>Order for pickup →</a></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+
+<script is:inline define:vars={{ hours: site.hours }}>
+  // Swap the static hours summary for today's status. Pacific time, regardless of visitor timezone.
+  (function () {
+    var el = document.querySelector('[data-hours-today]');
+    if (!el) return;
+    var parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
+    var get = function (t) { return (parts.find(function (p) { return p.type === t; }) || {}).value; };
+    var day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
+    var now = get('hour') + ':' + get('minute');
+    var today = hours.find(function (h) { return h.day === day; });
+    if (!today) return;
+    var fmt = function (t) { var h = +t.split(':')[0]; return (h % 12 || 12) + (h < 12 ? 'am' : 'pm'); };
+    el.textContent = now >= today.open && now < today.close
+      ? 'Open now · until ' + fmt(today.close)
+      : now < today.open ? 'Opens today at ' + fmt(today.open) : 'Closed now · see hours';
+  })();
+</script>
+
+<style>
+  .strip { background: var(--accent); color: var(--white); font-family: var(--font-mono); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+  .strip-inner { display: flex; flex-wrap: wrap; gap: 4px 24px; justify-content: space-between; padding-block: 9px; }
+  .strip a { color: var(--white); text-decoration: none; padding-block: 12px; margin-block: -12px; }
+  @media (max-width: 640px) { .strip-addr { display: none; } }
+
+  .header { border-bottom: 1px solid var(--line-dark); position: relative; }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 16px; }
+  .brand { display: flex; flex-direction: column; line-height: 1; text-decoration: none; }
+  .brand-name { font-family: var(--font-display); font-weight: 900; font-size: 32px; text-transform: uppercase; letter-spacing: .02em; }
+  .brand-sub { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted-on-dark); margin-top: 5px; }
+
+  .links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; font-size: 15px; font-weight: 500; }
+  .links a { text-decoration: none; padding-block: 10px; }
+  .links a:hover, .links a[aria-current] { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+
+  .mobile { display: none; }
+  .mobile summary {
+    list-style: none; cursor: pointer; width: 44px; height: 44px;
+    display: grid; place-items: center; border: 1px solid var(--line-dark); border-radius: var(--radius);
+  }
+  .mobile summary::-webkit-details-marker { display: none; }
+  .mobile-links {
+    position: absolute; left: 0; right: 0; top: 100%; z-index: 50;
+    background: var(--ink); border-bottom: 1px solid var(--line-dark);
+    list-style: none; margin: 0; padding: 8px var(--gutter) 20px;
+  }
+  .mobile-links a { display: block; padding: 14px 0; font-size: 18px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--line-dark); }
+
+  @media (max-width: 1023px) {
+    .links, .cta { display: none; }
+    .mobile { display: block; }
+  }
+</style>

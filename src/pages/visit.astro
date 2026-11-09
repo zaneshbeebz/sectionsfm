@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import Button from '../components/ui/Button.astro';
+import { site } from '../data/site';
+import faq from '../content/faq.json';
+
+// "333 E 17th St, Suite 22" -> "333 E 17th St" for short-form uses (title, description, map).
+const shortStreet = site.address.street.split(',')[0].trim();
+const city = site.address.city;
+
+const title = `Visit ${site.name} | ${shortStreet}, ${city}`;
+const description = `Visit ${site.name} at ${shortStreet}, ${city}. Hours: ${site.hoursSummary.join(', ')}. Directions, phone and pickup.`;
+
+// Time formatting: "10:00" -> "10am", "13:30" -> "1:30pm".
+const fmtTime = (t: string) => {
+  const [h, m] = t.split(':').map(Number);
+  const suffix = h >= 12 ? 'pm' : 'am';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return m ? `${h12}:${String(m).padStart(2, '0')}${suffix}` : `${h12}${suffix}`;
+};
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+// Monday first, Sunday last.
+const weekly = [...site.hours]
+  .sort((a, b) => ((a.day + 6) % 7) - ((b.day + 6) % 7))
+  .map((h) => ({ day: DAY_NAMES[h.day], hours: `${fmtTime(h.open)}–${fmtTime(h.close)}` }));
+
+// Same query string as the spec: Sections+Fine+Meats,+333+E+17th+St,+Costa+Mesa,+CA
+const mapQuery = [site.name, shortStreet, city, site.address.region]
+  .map((p) => p.replace(/ /g, '+'))
+  .join(',+');
+const mapSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+<BaseLayout title={title} description={description} path="/visit">
+  {faq.length > 0 && (
+    <Fragment slot="head">
+      <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+    </Fragment>
+  )}
+
+  <section class="section">
+    <div class="container">
+      <SectionHead as="h1" size="l" eyebrow={`${city}, ${site.address.region}`} title="Visit the shop" />
+
+      <div class="grid">
+        <div class="info">
+          <address>
+            <strong class="line">{site.name}</strong>
+            <span class="line">{site.address.street}</span>
+            <span class="line">{site.address.city}, {site.address.region} {site.address.postalCode}</span>
+          </address>
+
+          <h2 class="sub">Hours</h2>
+          <table class="hours">
+            <tbody>
+              {weekly.map((row) => (
+                <tr>
+                  <th scope="row">{row.day}</th>
+                  <td>{row.hours}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <p class="phone-line">
+            <span class="eyebrow">Phone</span>
+            <a class="phone" href={site.phoneHref}>{site.phone}</a>
+          </p>
+
+          <div class="actions">
+            <Button href={site.mapsUrl} variant="primary">Get directions</Button>
+            <Button href={site.phoneHref} variant="outline">Call</Button>
+            <Button href={site.orderUrl} variant="outline">Order for pickup</Button>
+          </div>
+        </div>
+
+        <div class="map">
+          <iframe
+            title="Map to Sections Fine Meats"
+            src={mapSrc}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-paper">
+    <div class="container">
+      <SectionHead eyebrow="Before you come in" title="Questions" id="faq" />
+      <div class="faq">
+        {faq.map((item) => (
+          <details>
+            <summary>{item.q}</summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .grid { display: grid; gap: 40px; }
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: 1fr 1.1fr; align-items: start; }
+  }
+
+  address { font-style: normal; display: flex; flex-direction: column; gap: 4px; margin-bottom: 40px; }
+  .line { display: block; }
+
+  .sub {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: clamp(24px, 2.4vw, 32px);
+    line-height: 1;
+    margin: 0 0 16px;
+  }
+
+  .hours { width: 100%; max-width: 420px; border-collapse: collapse; margin-bottom: 32px; }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-dark);
+    font-weight: 400;
+  }
+  .hours th { font-weight: 600; }
+  .hours td { text-align: right; font-family: var(--font-mono); font-size: 15px; }
+
+  .phone-line { display: flex; flex-direction: column; gap: 4px; margin: 0 0 32px; }
+  .phone {
+    display: inline-flex; align-items: center; min-height: 44px;
+    font-size: 20px; font-weight: 600; text-underline-offset: 4px;
+  }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .actions :global(.btn) { flex: 1 1 200px; }
+
+  .map iframe {
+    display: block; width: 100%; height: 100%; min-height: 360px;
+    border: 0; border-radius: var(--radius);
+  }
+
+  .faq { max-width: 52rem; }
+  .faq details { border-top: 1px solid var(--line-paper); }
+  .faq details:last-child { border-bottom: 1px solid var(--line-paper); }
+  .faq summary {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    min-height: 44px; padding: 14px 0; cursor: pointer;
+    font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+    font-size: 22px; line-height: 1.1;
+    list-style: none;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: '+'; flex: none; font-family: var(--font-mono); font-size: 22px; font-weight: 500;
+  }
+  .faq details[open] summary::after { content: '–'; }
+  .faq p { margin: 0 0 20px; color: var(--soft-on-paper); max-width: 40rem; }
+</style>

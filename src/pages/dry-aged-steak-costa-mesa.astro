@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import CategoryHero from '../components/category/CategoryHero.astro';
+import VisitCta from '../components/category/VisitCta.astro';
+import { site } from '../data/site';
+---
+<BaseLayout
+  title="Dry-Aged Steak Costa Mesa | Sections Fine Meats"
+  description="Dry-aged bone-in ribeye and T-bone, cut to order at the Sections Fine Meats counter in Costa Mesa. Call ahead or stop by and ask what's in the case."
+  path="/dry-aged-steak-costa-mesa"
+>
+  <CategoryHero
+    eyebrow="The counter"
+    title="Dry-aged steak in Costa Mesa"
+    lede="Bone-in ribeye and T-bone, cut to order by the butcher who is standing in front of you."
+    photoAlt="Dry-aged bone-in ribeye in the meat case at Sections Fine Meats"
+    photoLabel="Photo: dry-aged ribeye in the case"
+  >
+    <Button href={site.phoneHref} size="lg">Call ahead</Button>
+    <Button href={site.mapsUrl} variant="outline" size="lg">Get directions</Button>
+  </CategoryHero>
+  <!-- CONFIRM: swap in a real photo of the dry-aged case/ribeye (PhotoSlot src). -->
+
+  <section class="section on-paper" aria-labelledby="why">
+    <div class="container two">
+      <h2 class="display display-l" id="why">What dry-aging does</h2>
+      <div class="prose">
+        <p>Dry-aging is a slow rest. A large cut of beef hangs in a cold, controlled space where moisture slowly leaves the meat. The flavor concentrates and the texture softens.</p>
+        <p>The outside dries into a crust that gets trimmed away, so what you take home is the tender, richly flavored beef underneath. It is why a dry-aged steak tastes beefier than a fresh one.</p>
+        <!-- CONFIRM: aging duration(s), beef grade/source, and whether aging is done on site. Not stated on page. -->
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="case">
+    <div class="container two">
+      <h2 class="display display-l" id="case">At the counter</h2>
+      <div class="prose light">
+        <ul class="cuts">
+          <li><strong>Bone-in ribeye</strong><span>The steak we are known for.</span></li>
+          <li><strong>T-bone</strong><span>Strip on one side, tenderloin on the other.</span></li>
+        </ul>
+        <p>The case changes. Ask what is in the case today and we will show you what looks best.</p>
+        <p>Fresh cuts are sold at the counter, not through online ordering. <a href={site.phoneHref}>Call ahead</a> to ask what’s in the case today.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-paper" aria-labelledby="custom">
+    <div class="container">
+      <h2 class="display display-l" id="custom">Cut your way</h2>
+      <ul class="options">
+        <li><h3 class="display display-s">Thickness</h3><p>Tell us how thick you want it, from a quick sear to a long reverse sear.</p></li>
+        <li><h3 class="display display-s">Trim</h3><p>Leave the fat cap on or have it trimmed back to your liking.</p></li>
+        <li><h3 class="display display-s">Bone-in or out</h3><p>Keep the bone for flavor, or have it taken off.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <VisitCta title="Ask what's in the case" />
+
+  <section class="section more" aria-label="Keep browsing">
+    <div class="container links">
+      <a href="/sausage-charcuterie">House-made sausage &amp; charcuterie →</a>
+      <a href="/menu">See the full menu →</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .two { display: grid; gap: 28px; }
+  @media (min-width: 900px) { .two { grid-template-columns: 1fr 1.2fr; gap: 64px; align-items: start; } }
+  .prose { display: flex; flex-direction: column; gap: 16px; max-width: 38rem; font-size: 18px; margin: 0; }
+  .prose p { margin: 0; }
+  .on-paper .prose { color: var(--soft-on-paper); }
+  .light { color: var(--soft-on-dark); }
+  .light a { font-weight: 600; text-underline-offset: 4px; }
+  .cuts { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .cuts li { background: var(--ink-2); border: 1px solid var(--line-dark); border-radius: var(--radius); padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; }
+  .cuts strong { font-family: var(--font-display); font-size: 28px; text-transform: uppercase; font-weight: 800; color: var(--paper); line-height: 1; }
+  .options { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 28px; }
+  .options li { border-top: 3px solid var(--ink); padding-top: 16px; }
+  .options p { margin: 10px 0 0; color: var(--soft-on-paper); }
+  @media (min-width: 768px) { .options { grid-template-columns: repeat(3, 1fr); gap: 40px; } }
+  .more { padding-block: 40px; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px 32px; }
+  .links a { font-weight: 600; font-size: 17px; padding-block: 10px; text-underline-offset: 4px; }
+</style>

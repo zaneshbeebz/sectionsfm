@@ -1,0 +1,31 @@
+---
+import Button from '../ui/Button.astro';
+import { site } from '../../data/site';
+interface Props { title?: string; body?: string; heading?: 'h2' }
+const { title = 'Come see the case', body = 'Cuts are made to order at the counter. Stop in, or call ahead with questions.' } = Astro.props;
+---
+<section class="cta" aria-labelledby="visit-cta">
+  <div class="container inner">
+    <div class="copy">
+      <h2 class="display display-l" id="visit-cta">{title}</h2>
+      <p class="lede">{body}</p>
+      <p class="addr mono">{site.address.street}, {site.address.city}, {site.address.region} {site.address.postalCode}</p>
+    </div>
+    <div class="actions">
+      <Button href={site.phoneHref} variant="primary" size="lg">Call ahead {site.phone}</Button>
+      <Button href={site.mapsUrl} variant="outline" size="lg">Get directions</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta { background: var(--ink-2); padding-block: var(--section-y); border-block: 1px solid var(--line-dark); }
+  .inner { display: grid; gap: 32px; align-items: center; }
+  .copy { display: flex; flex-direction: column; gap: 16px; }
+  .addr { margin: 0; font-size: 14px; color: var(--muted-on-dark); }
+  .actions { display: flex; flex-direction: column; gap: 12px; }
+  .actions :global(.btn) { white-space: normal; text-align: center; }
+  @media (min-width: 768px) {
+    .inner { grid-template-columns: 1.4fr 1fr; gap: 64px; }
+  }
+</style>

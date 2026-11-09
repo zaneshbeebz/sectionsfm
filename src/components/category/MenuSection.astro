@@ -1,0 +1,37 @@
+---
+import type { MenuCategory, MenuItem } from '../../data/types';
+import MenuItemRow from './MenuItemRow.astro';
+interface Props { category: MenuCategory; note?: string }
+const { category, note } = Astro.props;
+// Split into runs of consecutive items sharing a group, so a mono subheading shows when the group changes.
+const runs: { group?: string; items: MenuItem[] }[] = [];
+for (const item of category.items) {
+  const last = runs[runs.length - 1];
+  if (last && last.group === item.group) last.items.push(item);
+  else runs.push({ group: item.group, items: [item] });
+}
+---
+<section class="menu-section" aria-labelledby={category.id}>
+  <h2 class="display display-m" id={category.id}>{category.name}</h2>
+  {note && <p class="note">{note}</p>}
+  {runs.map((run) => (
+    <div class="run">
+      {run.group && <h3 class="group mono">{run.group}</h3>}
+      <ul class="items">
+        {run.items.map((item) => <MenuItemRow item={item} />)}
+      </ul>
+    </div>
+  ))}
+</section>
+
+<style>
+  .menu-section { scroll-margin-top: 90px; }
+  h2 { padding-bottom: 12px; border-bottom: 3px solid var(--ink); margin-bottom: 8px; }
+  .note { margin: 12px 0 0; color: var(--soft-on-paper); }
+  .group {
+    margin: 20px 0 0; font-size: 12px; font-weight: 500; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted-on-paper);
+  }
+  .items { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; column-gap: 48px; }
+  @media (min-width: 768px) { .items { grid-template-columns: 1fr 1fr; } }
+</style>

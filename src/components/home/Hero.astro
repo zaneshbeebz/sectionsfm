@@ -1,0 +1,45 @@
+---
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+import PhotoSlot from '../ui/PhotoSlot.astro';
+const { rating } = site;
+---
+<section class="hero">
+  <div class="container grid">
+    <div class="copy">
+      <span class="eyebrow">Neighborhood butcher · 17th Street</span>
+      <h1 class="display display-xl">Cut to order.<br />Aged in house.</h1>
+      <p class="lede">Dry-aged steaks, house-made sausage and charcuterie, sandwiches built on our own smoked and roasted meats, and a butcher behind the counter who'll cut it exactly how you cook it.</p>
+      <div class="actions">
+        <Button href={site.orderUrl} variant="primary" size="lg">Order for pickup</Button>
+        <Button href={site.mapsUrl} variant="outline" size="lg">Get directions</Button>
+      </div>
+      <p class="rating">
+        <span class="num display">{rating.value}</span>
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <span class="rtext">Rated {rating.value} by our customers{rating.count ? ` · ${rating.count} reviews` : ''}</span>
+      </p>
+    </div>
+    <div class="photo">
+      <PhotoSlot alt="Dry-aged ribeye at the Sections Fine Meats counter" ratio="4 / 5" eager label="Hero photo: dry-aged ribeye" />
+      <span class="ticket">House-smoked · House-roasted · House-cured</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { padding-block: clamp(40px, 6vw, 80px); }
+  .grid { display: grid; gap: 40px; align-items: center; }
+  .copy { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .rating { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 8px 0 0; }
+  .num { font-size: 56px; }
+  .stars { letter-spacing: .1em; color: var(--paper); font-size: 18px; }
+  .rtext { font-family: var(--font-mono); font-size: 13px; color: var(--muted-on-dark); }
+  .photo { position: relative; }
+  .photo .ticket { position: absolute; left: 16px; bottom: 24px; max-width: calc(100% - 32px); }
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: 1.15fr .85fr; gap: 64px; }
+    .photo .ticket { left: -24px; }
+  }
+</style>

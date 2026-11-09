@@ -1,0 +1,38 @@
+---
+import reviews from '../../content/reviews.json';
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+import SectionHead from '../ui/SectionHead.astro';
+const real = reviews.filter((r: { placeholder?: boolean }) => !r.placeholder);
+---
+<section class="on-paper section" aria-labelledby="reviews-h">
+  <div class="container">
+    {real.length > 0 ? (
+      <>
+        <SectionHead id="reviews-h" eyebrow="Word from the neighborhood" title="What people say" />
+        <div class="grid">
+          {real.map((r) => (
+            <figure class="card">
+              <blockquote>{r.quote}</blockquote>
+              <figcaption class="mono">{r.author} · {r.source}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </>
+    ) : (
+      <div class="solo">
+        <span class="eyebrow">Word from the neighborhood</span>
+        <h2 class="display display-l" id="reviews-h">{site.rating.value} stars from our neighbors</h2>
+        <Button href={site.yelp} variant="outline" size="lg">Read reviews on Yelp</Button>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+  .card { margin: 0; background: var(--white); padding: 28px; border-radius: var(--radius); display: flex; flex-direction: column; gap: 20px; }
+  blockquote { margin: 0; font-size: 18px; line-height: 1.5; }
+  figcaption { font-size: 13px; color: var(--muted-on-paper); margin-top: auto; }
+  .solo { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+</style>

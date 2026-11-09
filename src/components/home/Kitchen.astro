@@ -1,0 +1,36 @@
+---
+import menu from '../../content/menu.json';
+import { site } from '../../data/site';
+import { formatPrice } from '../../data/types';
+import type { MenuItem } from '../../data/types';
+import Button from '../ui/Button.astro';
+import PhotoSlot from '../ui/PhotoSlot.astro';
+import SectionHead from '../ui/SectionHead.astro';
+const items: MenuItem[] = menu.categories.flatMap((c) => c.items).filter((i) => i.featured);
+---
+<section class="on-paper section" aria-labelledby="kitchen-h">
+  <div class="container">
+    <SectionHead id="kitchen-h" eyebrow="Made with our own meats" title="From the kitchen" linkHref="/menu" linkLabel="See the full menu" />
+    <ul class="grid">
+      {items.map((i) => (
+        <li class="card">
+          <PhotoSlot tone="light" ratio="1 / 1" alt={`${i.name} sandwich`} label={i.name} />
+          <div class="row">
+            <h3 class="display display-s">{i.name}</h3>
+            <span class="price mono">{formatPrice(i.price)}</span>
+          </div>
+          {i.description && <p class="desc">{i.description}</p>}
+        </li>
+      ))}
+    </ul>
+    <div class="cta"><Button href={site.orderUrl} variant="primary" size="lg">Order for pickup</Button></div>
+  </div>
+</section>
+
+<style>
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 32px 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-top: 2px solid var(--ink); margin-top: 16px; padding-top: 12px; }
+  .price { font-size: 15px; font-weight: 600; white-space: nowrap; }
+  .desc { margin: 8px 0 0; color: var(--soft-on-paper); font-size: 15px; line-height: 1.5; }
+  .cta { margin-top: 48px; }
+</style>

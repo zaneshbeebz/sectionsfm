@@ -1,0 +1,32 @@
+---
+import PhotoSlot from '../ui/PhotoSlot.astro';
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede: string;
+  photoAlt: string;
+  photoLabel: string;
+  photoSrc?: string;
+}
+const { eyebrow, title, lede, photoAlt, photoLabel, photoSrc } = Astro.props;
+---
+<section class="hero">
+  <div class="container grid">
+    <div class="copy">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1 class="display display-xl">{title}</h1>
+      <p class="lede">{lede}</p>
+      <div class="actions"><slot /></div>
+    </div>
+    <PhotoSlot alt={photoAlt} label={photoLabel} src={photoSrc} ratio="4 / 5" eager />
+  </div>
+</section>
+
+<style>
+  .hero { padding-block: clamp(40px, 6vw, 80px); background: var(--ink); }
+  .grid { display: grid; gap: 40px; align-items: center; }
+  .copy { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; min-width: 0; }
+  h1 { font-size: clamp(48px, 9vw, 112px); overflow-wrap: anywhere; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 1.3fr 1fr; gap: 64px; } }
+</style>

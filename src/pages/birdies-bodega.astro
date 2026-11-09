@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import MenuSection from '../components/category/MenuSection.astro';
+import VisitCta from '../components/category/VisitCta.astro';
+import { site } from '../data/site';
+import type { Menu } from '../data/types';
+import menuJson from '../content/menu.json';
+
+const menu = menuJson as Menu;
+const ids = ['pantry', 'dairy', 'produce'];
+const cats = ids.map((id) => menu.categories.find((c) => c.id === id)!).filter(Boolean);
+---
+<BaseLayout
+  title="Birdies Bodega | Sections Fine Meats, Costa Mesa"
+  description="Birdies Bodega is a marketplace inside Sections Fine Meats in Costa Mesa, with produce, bread and pantry staples to round out your butcher run."
+  path="/birdies-bodega"
+>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">A shop inside the shop</span>
+      <h1 class="display display-xl">Birdies Bodega</h1>
+      <p class="lede">Birdies Bodega is a small marketplace inside Sections Fine Meats. Pick up produce, bread and pantry staples while you grab your cuts, all in one stop.</p>
+      <!-- CONFIRM: bread selection/bakery source and Bodega hours if different from the shop. -->
+      <div class="actions">
+        <Button href={site.bodegaUrl} size="lg">Shop the bodega</Button>
+        <Button href="/menu" variant="outline" size="lg">See the full menu</Button>
+      </div>
+      <ul class="jump" aria-label="Bodega sections">
+        {cats.map((c) => <li><a href={`#${c.id}`}>{c.name}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <div class="on-paper">
+    <div class="container section sections">
+      {cats.map((c) => <MenuSection category={c} />)}
+      <p class="fee mono">A 2% surcharge applies to credit card payments.</p>
+      <div class="shop"><Button href={site.bodegaUrl} size="lg">Shop the bodega</Button></div>
+    </div>
+  </div>
+
+  <VisitCta title="Visit the bodega" body="Find us inside Sections Fine Meats. Stock changes, so call ahead if you are after something specific." />
+</BaseLayout>
+
+<style>
+  .hero { padding-block: clamp(48px, 7vw, 96px); }
+  .hero .container { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  h1 { font-size: clamp(56px, 11vw, 132px); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .jump { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .jump a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 8px 18px;
+    border: 1.5px solid var(--paper); border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 15px;
+  }
+  .jump a:hover { background: var(--paper); color: var(--ink); }
+  .sections { display: flex; flex-direction: column; gap: clamp(48px, 6vw, 80px); }
+  .fee { margin: 0; font-size: 14px; color: var(--muted-on-paper); }
+  .shop { margin-top: -16px; }
+</style>

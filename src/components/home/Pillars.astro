@@ -1,0 +1,26 @@
+---
+import pillars from '../../content/pillars.json';
+const links = ['/dry-aged-steak-costa-mesa', '/sausage-charcuterie'];
+---
+<section class="section" aria-label="How we work">
+  <div class="container">
+    <ol class="grid">
+      {pillars.map((p, i) => (
+        <li class="pillar">
+          <span class="n mono">{String(i + 1).padStart(2, '0')}</span>
+          <h2 class="display display-m">{p.title}</h2>
+          <p>{p.body}</p>
+          {links[i] && <a href={links[i]}>Learn more →</a>}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 40px 32px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .pillar { border-top: 1px solid var(--line-dark); padding-top: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .n { font-size: 14px; letter-spacing: .2em; color: var(--muted-on-dark); }
+  p { margin: 0; color: var(--soft-on-dark); max-width: 30rem; }
+  a { font-weight: 600; text-underline-offset: 4px; padding-block: 10px; margin-top: auto; }
+</style>

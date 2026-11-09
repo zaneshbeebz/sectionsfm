@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import Button from '../components/ui/Button.astro';
+import { site } from '../data/site';
+---
+<BaseLayout
+  title={`Page not found | ${site.name}`}
+  description={`That page isn't here. Browse the menu or head back to ${site.name}.`}
+  path="/404"
+  noindex={true}
+>
+  <section class="section">
+    <div class="container">
+      <SectionHead as="h1" size="l" eyebrow="404" title="That cut's not in the case" />
+      <p class="lede">
+        The page you were looking for isn't here. Check out what's on the menu, or start back at the shop.
+      </p>
+      <div class="actions">
+        <Button href="/" variant="light">Back to home</Button>
+        <Button href="/menu" variant="outline">See the menu</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lede { margin-bottom: 32px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+</style>

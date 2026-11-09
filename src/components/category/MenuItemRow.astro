@@ -1,0 +1,22 @@
+---
+import { formatPrice, type MenuItem } from '../../data/types';
+interface Props { item: MenuItem }
+const { item } = Astro.props;
+---
+<li class="row">
+  <div class="line">
+    <span class="name">{item.name}</span>
+    <span class="leader" aria-hidden="true"></span>
+    <span class="price mono">{formatPrice(item.price)}</span>
+  </div>
+  {item.description && <p class="desc">{item.description}</p>}
+</li>
+
+<style>
+  .row { padding-block: 10px; break-inside: avoid; }
+  .line { display: flex; align-items: baseline; gap: 8px; }
+  .name { font-weight: 600; font-size: 17px; line-height: 1.35; min-width: 0; overflow-wrap: anywhere; }
+  .leader { flex: 1 1 24px; min-width: 24px; border-bottom: 2px dotted var(--muted-on-paper); transform: translateY(-4px); }
+  .price { font-size: 15px; font-weight: 500; white-space: nowrap; }
+  .desc { margin: 4px 0 0; font-size: 15px; line-height: 1.5; color: var(--soft-on-paper); max-width: 34rem; }
+</style>

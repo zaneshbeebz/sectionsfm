@@ -1,0 +1,22 @@
+---
+import posts from '../../content/instagram.json';
+import { site } from '../../data/site';
+import PhotoSlot from '../ui/PhotoSlot.astro';
+import SectionHead from '../ui/SectionHead.astro';
+---
+<section class="section" aria-labelledby="ig-h">
+  <div class="container">
+    <SectionHead id="ig-h" eyebrow="On Instagram" title="Fresh off the block" linkHref={site.instagram} linkLabel={site.instagramHandle} />
+    <ul class="grid">
+      {posts.map((p) => (
+        <li><a href={p.href} target="_blank" rel="noopener" aria-label={p.alt}><PhotoSlot src={p.src} alt={p.alt} ratio="1 / 1" /></a></li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  a { display: block; min-height: 44px; }
+  @media (min-width: 768px) { .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+</style>
