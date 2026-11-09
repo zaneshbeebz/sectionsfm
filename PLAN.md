@@ -12,7 +12,7 @@ Mockup (desktop + mobile): https://claude.ai/artifact/8iCqy9aPERB3bT1WopbpHT
 - Known for dry-aged ribeye and T-bone, and sausage and charcuterie made from their own trim
 - Birdies Bodega (produce, bread, pantry) runs inside the shop on its own Toast page
 - Online ordering already runs on Toast: order.toasttab.com/online/sectionsfinemeats
-- **sectionsfm.com returns 404.** Search engines have no site to rank, and Instagram's bio link points straight at Toast.
+- **sectionsfm.com is their current site, hosted on Wix.** It returns 404 to automated tools (which is why early research missed it) but loads in a browser. Instagram's bio link points straight at Toast. Moving the domain to Vercel means changing DNS away from Wix.
 - Instagram: about 3.3k followers; its most recent visible post is from July 2024.
 
 ## UX direction (for approval): "Butcher Ticket"
